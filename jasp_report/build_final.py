@@ -12,6 +12,10 @@ HERE = os.path.dirname(os.path.abspath(__file__)); FIG = os.path.join(HERE, 'fig
 R = json.load(open(os.path.join(HERE, 'results_jasp.json')))
 m1, ml, m2 = R['m1'], R['ml'], R['m2']
 C1, C2, C3 = m1['coef'], ml['coef'], m2['coef']
+# ---- edit these three lines (cover page and file names) and re-run to rebuild
+GROUP, SECTION, FILEBASE = 'Group 12', 'Section H', 'GoodBelly_Case_Report_Sec_H_Group_12'
+TEAM = [('[Name 1]', '[Roll no.]'), ('[Name 2]', '[Roll no.]'), ('[Name 3]', '[Roll no.]'), ('[Name 4]', '[Roll no.]'), ('[Name 5]', '[Roll no.]')]
+PROF = '[Professor name]'
 BURG = RGBColor(0x7A, 0x1E, 0x2E); CHAR = RGBColor(0x33, 0x33, 0x33); GREYT = RGBColor(0x55, 0x55, 0x55)
 HDR = '6B1B28'; BAND = 'F5F2EF'; FONT = 'Times New Roman'
 
@@ -124,7 +128,7 @@ def page_break(): doc.add_paragraph().add_run().add_break(WD_BREAK.PAGE)
 
 def footer():
     fp = sec.footer.paragraphs[0]; fp.alignment = WD_ALIGN_PARAGRAPH.CENTER
-    r = fp.add_run('GoodBelly Case Report  |  Section E, Group 15  |  '); r.font.size = Pt(9); r.font.color.rgb = GREYT
+    r = fp.add_run(f'GoodBelly Case Report  |  {SECTION}, {GROUP}  |  '); r.font.size = Pt(9); r.font.color.rgb = GREYT
     for typ, txt in (('begin', None), (None, 'PAGE'), ('separate', None), ('end', None)):
         r2 = fp.add_run(); r2.font.size = Pt(9); r2.font.color.rgb = GREYT
         if typ:
@@ -141,9 +145,9 @@ P('Indian Institute of Management Bangalore', 13, 20, 'c', color=GREYT, before=6
 t = P('GoodBelly: Case Report', 27, 4, 'c', color=BURG); t.runs[0].bold = True
 sub = P('Using Statistics to Justify the Marketing Expense', 14, 26, 'c', color=CHAR); sub.runs[0].italic = True
 P('Decision Sciences II  |  PGP 2026–28', 12, 3, 'c', color=CHAR)
-P('Submitted to: Prof. Rajluxmi Murthy', 12, 22, 'c', color=CHAR)
-P('Section E, Group 15', 13, 6, 'c', color=CHAR).runs[0].bold = True
-table(['Team member', 'Roll number'], [['Harsh Jain', '2611356'], ['Anshh Chaturvedi', '2611355'], ['Snevi Kothari', '2611312'], ['Vishakha Tomar', '2611313'], ['Gokul Krishnan A', '2611367'], ['Yash Rajesh', '2611342']],
+P(f'Submitted to: Prof. {PROF}' if not PROF.startswith('[') else f'Submitted to: {PROF}', 12, 22, 'c', color=CHAR)
+P(f'{SECTION}, {GROUP}', 13, 6, 'c', color=CHAR).runs[0].bold = True
+table(['Team member', 'Roll number'], [list(t) for t in TEAM],
       [3.0, 1.8], ['l', 'l'], size=11, band=False)
 P('6 October 2026', 11, 0, 'c', color=GREYT, before=14)
 page_break()
@@ -352,4 +356,4 @@ table(['Step', 'JASP analysis and settings', 'Used in'],
       [1.2, 4.2, 1.0], ['l', 'l', 'l'], size=9, cap='Table A.1: JASP settings')
 P("The residual figures were redrawn from the same residuals for a uniform layout, with a P-P plot added as the brief asks; JASP\u2019s own Q-Q plot shows the same information. The clustered standard errors, cross-validation, Breusch-Pagan test (p = " + f"{n3(m2['bp_p'])}" + " for Model 3) and the search over 154 higher-order terms were run outside JASP. Scripts and a workbook of all tables are in the submission folder.", 10)
 
-out = os.path.join(HERE, 'GoodBelly_Case_Report_Sec_E_Group_15.docx'); doc.save(out); print('saved', out)
+out = os.path.join(HERE, FILEBASE + '.docx'); doc.save(out); print('saved', out)
